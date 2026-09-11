@@ -6400,7 +6400,7 @@
                                     <div class="t702__title t-title t-title_xxs" id="popuptitle_2442651153">Confirm Your Attendance!</div>
                                     <div class="t702__descr t-descr t-descr_xs">Please RSVP before October 10, 2026</div>
                                 </div>
-                                <form id="form2442651153" name='form2442651153' role="form" action='' method='POST' data-formactiontype="0" data-inputbox=".t-input-group" class="t-form t-form_inputs-total_2 " data-success-callback="t702_onSuccess">
+                                <form id="form2442651153" name='form2442651153' role="form" action='' method='POST' data-formactiontype="0" data-inputbox=".t-input-group" class="t-form t-form_inputs-total_3 " data-success-callback="t702_onSuccess">
                                     <!-- NO ONE SERVICES CONNECTED -->
                                     <!-- @classes t-title t-text t-btn -->
                                     <div class="js-successbox t-form__successbox t-text t-text_md" aria-live="polite" style="display:none;"></div>
@@ -6454,6 +6454,13 @@ t-form__inputsbox_vertical-form t-form__inputsbox_inrow
                                                 </script>
                                             </div>
                                             <div class="t-input-error" aria-live="polite" id="error_2221855674631"></div>
+                                        </div>
+                                        <div class="t-input-group t-input-group_ta " data-input-lid="2221855674633" data-field-type="ta" data-field-name="Message">
+                                            <label for='input_2221855674633' class="t-input-title t-descr t-descr_md" id="field-title_2221855674633" data-redactor-toolbar="no" field="li_title__2221855674633" style="color:;font-weight:400;font-family:'Georgia';">Leave us a little piece of your heart, a wish, a memory, or a few words for our new beginning&hellip;</label>
+                                            <div class="t-input-block " style="border-radius:5px;">
+                                                <textarea name="Message" id="input_2221855674633" class="t-input js-tilda-rule" rows="4" maxlength="500" aria-describedby="error_2221855674633" style="color:#4a4a4a;border:1px solid #c9c9c9;border-radius:5px;font-family:'Georgia';font-weight:400;resize:vertical;"></textarea>
+                                            </div>
+                                            <div class="t-input-error" aria-live="polite" id="error_2221855674633"></div>
                                         </div>
                                         <div class="t-form__errorbox-middle">
                                             <!--noindex-->
@@ -6601,6 +6608,7 @@ t-form__inputsbox_vertical-form t-form__inputsbox_inrow
                                         if (!form) return;
                                         var nameInput = document.getElementById('input_2221855674630');
                                         var attendInput = document.getElementById('rsvp-attend-input');
+                                        var messageInput = document.getElementById('input_2221855674633');
                                         var submitBtn = document.getElementById('rsvp-submit-btn');
                                         var submitText = document.getElementById('rsvp-submit-text');
                                         var successBox = form.querySelector('.js-successbox');
@@ -6643,7 +6651,8 @@ t-form__inputsbox_vertical-form t-form__inputsbox_inrow
                                                 },
                                                 body: JSON.stringify({
                                                     name: name,
-                                                    attending: attending
+                                                    attending: attending,
+                                                    message: (messageInput && messageInput.value || '').trim()
                                                 })
                                             }).then(function(res) {
                                                 if (!res.ok) throw new Error('bad response');

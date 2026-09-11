@@ -114,34 +114,52 @@
     min-width: 180px;
     max-width: 320px;
   }
-  table {
-    width: 100%;
-    border-collapse: collapse;
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card {
     background: #fff;
     border-radius: 12px;
-    overflow: hidden;
+    padding: 14px 18px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.05);
   }
-  th, td {
-    text-align: left;
-    padding: 12px 16px;
-    font-size: 14px;
-    border-bottom: 1px solid #f0ebe3;
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
   }
-  th {
-    background: #f9f5ee;
-    font-weight: 700;
+  .card-name {
+    font-size: 16px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-date {
     font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #8a8a8a;
+    color: #b0b0b0;
   }
-  tr:last-child td { border-bottom: none; }
+  .card-message {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0ebe3;
+    font-size: 14px;
+    color: #5a5a5a;
+    font-style: italic;
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
   .badge {
     display: inline-block;
     padding: 3px 11px;
     border-radius: 12px;
     font-size: 12px;
+    white-space: nowrap;
   }
   .badge.yes { background: #e4f3e6; color: #2e7d43; }
   .badge.no { background: #fbe6e4; color: #c0392b; }
@@ -152,21 +170,6 @@
     padding: 60px 0;
   }
   .error-box { color: #c0392b; }
-  @media (max-width: 560px) {
-    table, thead, tbody, th, td, tr { display: block; }
-    thead { display: none; }
-    tr { background: #fff; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 6px 0; }
-    td { border-bottom: none; padding: 6px 16px; }
-    td::before {
-      content: attr(data-label);
-      display: block;
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #b0b0b0;
-      margin-bottom: 2px;
-    }
-  }
 </style>
 </head>
 <body>
@@ -247,14 +250,20 @@
       tableWrap.innerHTML = '<div class="empty">No RSVPs yet.</div>';
       return;
     }
-    var rows = list.map(function (r) {
-      return '<tr>' +
-        '<td data-label="Name">' + escapeHtml(r.name || '') + '</td>' +
-        '<td data-label="Attending"><span class="badge ' + badgeClass(r.attending) + '">' + badgeLabel(r.attending) + '</span></td>' +
-        '<td data-label="Submitted">' + formatDate(r.createdAt) + '</td>' +
-        '</tr>';
+    var cards = list.map(function (r) {
+      var message = (r.message || '').trim();
+      return '<div class="card">' +
+        '<div class="card-top">' +
+          '<span class="card-name">' + escapeHtml(r.name || '') + '</span>' +
+          '<span class="card-meta">' +
+            '<span class="badge ' + badgeClass(r.attending) + '">' + badgeLabel(r.attending) + '</span>' +
+            '<span class="card-date">' + formatDate(r.createdAt) + '</span>' +
+          '</span>' +
+        '</div>' +
+        (message ? '<div class="card-message">&ldquo;' + escapeHtml(message) + '&rdquo;</div>' : '') +
+        '</div>';
     }).join('');
-    tableWrap.innerHTML = '<table><thead><tr><th>Name</th><th>Attending</th><th>Submitted</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    tableWrap.innerHTML = '<div class="cards">' + cards + '</div>';
   }
 
   function escapeHtml(s) {

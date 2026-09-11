@@ -2,6 +2,7 @@ const { getDb } = require('./_db');
 
 const ALLOWED_ANSWERS = ['Yes, I will', 'Unfortunately, I cant :(', 'Ill tell you a bit later'];
 const MAX_LEN = 300;
+const MAX_MESSAGE_LEN = 500;
 
 function clean(value) {
   return String(value || '').trim().slice(0, MAX_LEN);
@@ -23,6 +24,7 @@ async function handleCreate(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const name = clean(body.name);
     const attending = clean(body.attending);
+    const message = String(body.message || '').trim().slice(0, MAX_MESSAGE_LEN);
 
     if (!name) {
       return res.status(400).json({ error: 'Name is required' });
@@ -35,6 +37,7 @@ async function handleCreate(req, res) {
     await db.collection('rsvps').insertOne({
       name,
       attending,
+      message,
       createdAt: new Date(),
       userAgent: clean(req.headers['user-agent']),
     });
