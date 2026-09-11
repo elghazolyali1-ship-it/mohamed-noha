@@ -1,0 +1,12 @@
+{
+  "name": "mohamed-noha-wedding",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mohamed & Noha wedding invitation site with RSVP API",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "mongodb": "^6.10.0"
+  }
+}
