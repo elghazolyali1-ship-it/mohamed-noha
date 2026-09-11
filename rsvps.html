@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RSVPs &mdash; Noha &amp; Mohamed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rufina:wght@400;700&family=Georgia&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #fffdfb;
+    color: #3a3a3a;
+    font-family: Georgia, serif;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+  }
+  h1 {
+    font-family: 'Rufina', serif;
+    font-weight: 400;
+    font-size: clamp(28px, 5vw, 38px);
+    text-align: center;
+    margin: 0 0 6px;
+  }
+  .sub {
+    text-align: center;
+    color: #8a8a8a;
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+  .gate {
+    max-width: 380px;
+    margin: 60px auto;
+    text-align: center;
+  }
+  .gate input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: #4a4a4a;
+    margin-bottom: 12px;
+  }
+  .gate button, .toolbar button {
+    background: #9bc9e1;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 11px 26px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .gate button:hover, .toolbar button:hover { opacity: 0.9; }
+  .gate .err {
+    color: #c0392b;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+  }
+  .summary {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 34px;
+  }
+  .stat {
+    background: linear-gradient(160deg,#ffffff,#f4f0ea);
+    border: 1px solid rgba(122,154,170,0.18);
+    border-radius: 12px;
+    padding: 16px 22px;
+    text-align: center;
+    min-width: 110px;
+    box-shadow: 0 2px 16px rgba(180,145,85,0.10);
+  }
+  .stat .n {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .l {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7a9aaa;
+    margin-top: 6px;
+  }
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .toolbar .search {
+    padding: 9px 14px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    flex: 1;
+    min-width: 180px;
+    max-width: 320px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0ebe3;
+  }
+  th {
+    background: #f9f5ee;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8a8a8a;
+  }
+  tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+  .badge.yes { background: #e4f3e6; color: #2e7d43; }
+  .badge.no { background: #fbe6e4; color: #c0392b; }
+  .badge.maybe { background: #fdf3d8; color: #a87b12; }
+  .empty, .loading, .error-box {
+    text-align: center;
+    color: #8a8a8a;
+    padding: 60px 0;
+  }
+  .error-box { color: #c0392b; }
+  @media (max-width: 560px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    tr { background: #fff; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 6px 0; }
+    td { border-bottom: none; padding: 6px 16px; }
+    td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #b0b0b0;
+      margin-bottom: 2px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>RSVP Responses</h1>
+    <div class="sub">Noha &amp; Mohamed &middot; October 24, 2026</div>
+
+    <div id="gate" class="gate">
+      <input id="keyInput" type="password" placeholder="Admin key" autocomplete="off"/>
+      <button id="gateBtn">View responses</button>
+      <div class="err" id="gateErr">Invalid admin key.</div>
+    </div>
+
+    <div id="content" style="display:none;">
+      <div class="summary" id="summary"></div>
+      <div class="toolbar">
+        <input class="search" id="searchInput" type="text" placeholder="Search by name..."/>
+        <button id="refreshBtn">Refresh</button>
+      </div>
+      <div id="tableWrap"></div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+  var gate = document.getElementById('gate');
+  var content = document.getElementById('content');
+  var keyInput = document.getElementById('keyInput');
+  var gateBtn = document.getElementById('gateBtn');
+  var gateErr = document.getElementById('gateErr');
+  var summary = document.getElementById('summary');
+  var tableWrap = document.getElementById('tableWrap');
+  var searchInput = document.getElementById('searchInput');
+  var refreshBtn = document.getElementById('refreshBtn');
+  var allRsvps = [];
+
+  function getStoredKey() {
+    try { return sessionStorage.getItem('rsvp_admin_key') || ''; } catch (e) { return ''; }
+  }
+  function storeKey(k) {
+    try { sessionStorage.setItem('rsvp_admin_key', k); } catch (e) {}
+  }
+
+  function badgeClass(attending) {
+    if (attending === 'Yes, I will') return 'yes';
+    if (attending === 'Unfortunately, I cant :(') return 'no';
+    return 'maybe';
+  }
+  function badgeLabel(attending) {
+    if (attending === 'Yes, I will') return 'Coming';
+    if (attending === 'Unfortunately, I cant :(') return "Can't come";
+    return 'Not sure yet';
+  }
+  function formatDate(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    } catch (e) { return iso; }
+  }
+
+  function renderSummary(list) {
+    var yes = list.filter(function (r) { return r.attending === 'Yes, I will'; }).length;
+    var no = list.filter(function (r) { return r.attending === 'Unfortunately, I cant :('; }).length;
+    var maybe = list.length - yes - no;
+    summary.innerHTML = [
+      ['Total', list.length],
+      ['Coming', yes],
+      ["Can't come", no],
+      ['Not sure', maybe]
+    ].map(function (s) {
+      return '<div class="stat"><div class="n">' + s[1] + '</div><div class="l">' + s[0] + '</div></div>';
+    }).join('');
+  }
+
+  function renderTable(list) {
+    if (!list.length) {
+      tableWrap.innerHTML = '<div class="empty">No RSVPs yet.</div>';
+      return;
+    }
+    var rows = list.map(function (r) {
+      return '<tr>' +
+        '<td data-label="Name">' + escapeHtml(r.name || '') + '</td>' +
+        '<td data-label="Attending"><span class="badge ' + badgeClass(r.attending) + '">' + badgeLabel(r.attending) + '</span></td>' +
+        '<td data-label="Submitted">' + formatDate(r.createdAt) + '</td>' +
+        '</tr>';
+    }).join('');
+    tableWrap.innerHTML = '<table><thead><tr><th>Name</th><th>Attending</th><th>Submitted</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function applyFilter() {
+    var q = (searchInput.value || '').toLowerCase().trim();
+    var filtered = q ? allRsvps.filter(function (r) { return (r.name || '').toLowerCase().indexOf(q) !== -1; }) : allRsvps;
+    renderTable(filtered);
+  }
+
+  function load(key) {
+    tableWrap.innerHTML = '<div class="loading">Loading&hellip;</div>';
+    summary.innerHTML = '';
+    fetch('/api/rsvp?key=' + encodeURIComponent(key))
+      .then(function (res) {
+        if (res.status === 404) throw new Error('unauthorized');
+        if (!res.ok) throw new Error('server');
+        return res.json();
+      })
+      .then(function (data) {
+        gate.style.display = 'none';
+        content.style.display = 'block';
+        gateErr.style.display = 'none';
+        allRsvps = data.rsvps || [];
+        renderSummary(allRsvps);
+        renderTable(allRsvps);
+      })
+      .catch(function (err) {
+        if (err.message === 'unauthorized') {
+          gate.style.display = 'block';
+          content.style.display = 'none';
+          gateErr.style.display = 'block';
+          try { sessionStorage.removeItem('rsvp_admin_key'); } catch (e) {}
+        } else {
+          tableWrap.innerHTML = '<div class="error-box">Something went wrong. Please try again.</div>';
+        }
+      });
+  }
+
+  gateBtn.addEventListener('click', function () {
+    var key = keyInput.value.trim();
+    if (!key) return;
+    storeKey(key);
+    load(key);
+  });
+  keyInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') gateBtn.click();
+  });
+  refreshBtn.addEventListener('click', function () {
+    load(getStoredKey());
+  });
+  searchInput.addEventListener('input', applyFilter);
+
+  // Support /rsvps.html?key=XXXX for a quick shareable link
+  var urlKey = new URLSearchParams(window.location.search).get('key');
+  var startKey = urlKey || getStoredKey();
+  if (startKey) {
+    keyInput.value = startKey;
+    load(startKey);
+  }
+})();
+</script>
+</body>
+</html>
