@@ -700,6 +700,81 @@
                                     </svg>
                                 </div>
                             </div>
+                            <!-- Scroll Down Hint -->
+                            <style>
+                                #rec2442650993 {
+                                    position: relative;
+                                }
+
+                                #mn-scroll-hint {
+                                    position: absolute;
+                                    top: 62%;
+                                    left: 50%;
+                                    transform: translate(-50%, calc(-50% + 10px));
+                                    z-index: 50;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    gap: 8px;
+                                    opacity: 0;
+                                    pointer-events: none;
+                                    cursor: pointer;
+                                    transition: opacity 0.7s ease, transform 0.7s ease;
+                                }
+                                #mn-scroll-hint.is-visible {
+                                    opacity: 1;
+                                    transform: translate(-50%, -50%);
+                                    pointer-events: auto;
+                                }
+                                #mn-scroll-hint__label {
+                                    font-family: 'Rufina', serif;
+                                    font-size: 12px;
+                                    letter-spacing: 3px;
+                                    text-transform: uppercase;
+                                    color: #666666;
+                                    text-shadow: 0 1px 4px rgba(255,255,255,0.7);
+                                }
+                                #mn-scroll-hint__icon {
+                                    width: 24px;
+                                    height: 38px;
+                                    border: 2px solid #666666;
+                                    border-radius: 14px;
+                                    position: relative;
+                                    background: rgba(255,255,255,0.35);
+                                    animation: mnScrollHintFloat 2.2s ease-in-out infinite;
+                                }
+                                #mn-scroll-hint__icon::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 6px;
+                                    left: 50%;
+                                    width: 4px;
+                                    height: 8px;
+                                    margin-left: -2px;
+                                    background: #666666;
+                                    border-radius: 2px;
+                                    animation: mnScrollHintWheel 1.6s ease-in-out infinite;
+                                }
+                                @keyframes mnScrollHintWheel {
+                                    0% { opacity: 1; transform: translateY(0); }
+                                    70% { opacity: 0; transform: translateY(14px); }
+                                    100% { opacity: 0; transform: translateY(14px); }
+                                }
+                                @keyframes mnScrollHintFloat {
+                                    0%, 100% { transform: translateY(0); }
+                                    50% { transform: translateY(5px); }
+                                }
+                                @media screen and (max-width: 639px) {
+                                    #mn-scroll-hint__icon {
+                                        width: 20px;
+                                        height: 32px;
+                                    }
+                                    #mn-scroll-hint__label {
+                                        font-size: 10px;
+                                        letter-spacing: 2px;
+                                    }
+                                }
+                            </style>
                             <script>
                                 function waitForButton(selector, callback) {
                                     const button = document.querySelector(selector);
@@ -723,6 +798,18 @@
                                         ).catch(err => console.log('Audio play failed:', err));
                                         audioControl.style.visibility = 'visible';
                                         audioControl.style.opacity = '1';
+                                        setTimeout(function() {
+                                            const scrollHint = document.getElementById('mn-scroll-hint');
+                                            if (scrollHint) {
+                                                scrollHint.classList.add('is-visible');
+                                                scrollHint.addEventListener('click', function() {
+                                                    window.scrollBy({
+                                                        top: window.innerHeight * 0.8,
+                                                        behavior: 'smooth'
+                                                    });
+                                                });
+                                            }
+                                        }, 2600);
                                     });
                                     audioControl.addEventListener('click', function() {
                                         if (audio.paused) {
@@ -1277,6 +1364,10 @@
                     });
                 </script>
                 <!-- /T396 -->
+                <div id="mn-scroll-hint" aria-hidden="true">
+                    <span id="mn-scroll-hint__icon"></span>
+                    <span id="mn-scroll-hint__label">Scroll</span>
+                </div>
             </div>
             <div id="rec2442651003" class="r t-rec t-rec_pb_0" style="padding-bottom:0px; " data-animationappear="off" data-record-type="396">
                 <!-- T396 -->
